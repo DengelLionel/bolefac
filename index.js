@@ -4,7 +4,10 @@ const axios = require('axios');
 require('dotenv').config();
 const app = express();
 const PORT = process.env.PORT || 3000;
-
+const headers={
+    'X-Shopify-Access-Token': process.env.TOKEN,
+    "Content-Type": "application/json"
+}
 app.use(bodyParser.json());
 
 app.post('/webhook', async (req, res) => {
@@ -25,14 +28,21 @@ app.post('/webhook', async (req, res) => {
 
   try {
     // Actualiza las etiquetas del pedido
-    await axios.put(`https://${process.env.SHOPIFY_API_KEY}:${process.env.SHOPIFY_API_PASSWORD}@${process.env.SHOPIFY_SHOP_NAME}.myshopify.com/admin/api/2024-04/orders/${order.id}.json`, {
-      order: {
-        id: order.id,
-        tags: tags
-      }
-    });
-
-    res.status(200).send('Webhook received');
+    await axios({
+        method: 'put',
+        url: `https://${process.env.SHOPIFY_SHOP_NAME}.myshopify.com/admin/api/2022-01/orders/${order.id}.json`,
+        headers: headers,
+        data: {
+          order: {
+            id: order.id,
+            tags: tags
+          }
+        }
+      })
+      .then(response => {
+        console.log('Order tags updated:', response.data);
+        res.status(200).send('Webhook received');
+      })
   } catch (error) {
     console.error('Error updating order tags:', error);
     res.status(500).send('Error processing webhook');
