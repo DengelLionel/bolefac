@@ -30,7 +30,7 @@ app.post('/webhook', async (req, res) => {
     // Actualiza las etiquetas del pedido
     await axios({
         method: 'put',
-        url: `https://${process.env.SHOPIFY_SHOP_NAME}.myshopify.com/admin/api/2022-01/orders/${order.id}.json`,
+        url: `https://${process.env.SHOPIFY_SHOP_NAME}.myshopify.com/admin/api/2024-04/orders/${order.id}.json`,
         headers: headers,
         data: {
           order: {
